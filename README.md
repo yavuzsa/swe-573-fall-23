@@ -1,2 +1,3 @@
-# swe-573-fall-23
-a 'currently' empty epository for my software development practice class. don't know what it will be yet. perhaps a 'twitter clone over lunch break' project ? 
+# SWE 573 Fall 2023
+A web application project that allows people to share their stories from any point in their life
+Meant to be a platform where we have can have peak at history through people's stories.
