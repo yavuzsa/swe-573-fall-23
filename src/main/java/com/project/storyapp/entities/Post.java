@@ -1,12 +1,12 @@
 package com.project.storyapp.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="post")
@@ -15,7 +15,12 @@ public class Post {
 
     @Id
     Long id;
-    Long userId;
+
+    @ManyToOne( fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    User user;
     String title;
     @Column(columnDefinition = "text")
     String text;
