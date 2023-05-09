@@ -5,10 +5,12 @@ import com.project.storyapp.entities.User;
 import com.project.storyapp.repos.PostRepository;
 import com.project.storyapp.requests.PostCreateRequest;
 import com.project.storyapp.requests.PostUpdateRequest;
+import com.project.storyapp.responses.PostResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -21,11 +23,14 @@ public class PostService {
         this.userService = userService;
     }
 
-    public List<Post> getAllPosts(Optional<Long> userId) {
+    public List<PostResponse> getAllPosts(Optional<Long> userId) {
+        List<Post> postList;
         if(userId.isPresent()) {
-            return postRepository.findByUserId(userId.get());
+            postList = postRepository.findByUserId(userId.get());
+        } else {
+            postList = postRepository.findAll();
         }
-        return postRepository.findAll();
+        return postList.stream().map(PostResponse::new).collect(Collectors.toList());
     }
 
     public Post getOnePostById(Long postId) {
