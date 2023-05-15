@@ -3,6 +3,7 @@ package com.project.storyapp.controllers;
 import com.project.storyapp.entities.Post;
 import com.project.storyapp.requests.PostCreateRequest;
 import com.project.storyapp.requests.PostUpdateRequest;
+import com.project.storyapp.responses.PostResponse;
 import com.project.storyapp.services.PostService;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class PostController {
     }
 
     @GetMapping
-    public List<Post> gelAllPosts(@RequestParam Optional<Long> userId) {
+    public List<PostResponse> gelAllPosts(@RequestParam Optional<Long> userId) {
         return postService.getAllPosts(userId);
     }
 
