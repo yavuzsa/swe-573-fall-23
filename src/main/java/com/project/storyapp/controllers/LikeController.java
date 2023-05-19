@@ -3,6 +3,7 @@ package com.project.storyapp.controllers;
 
 import com.project.storyapp.entities.Like;
 import com.project.storyapp.requests.LikeCreateRequest;
+import com.project.storyapp.responses.LikeResponse;
 import com.project.storyapp.services.LikeService;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class LikeController {
     }
 
     @GetMapping
-    public List<Like> getAllLikes(@RequestParam Optional<Long> userId, @RequestParam Optional<Long> postId) {
+    public List<LikeResponse> getAllLikes(@RequestParam Optional<Long> userId, @RequestParam Optional<Long> postId) {
         return likeService.getAllLikes(userId, postId);
     }
 

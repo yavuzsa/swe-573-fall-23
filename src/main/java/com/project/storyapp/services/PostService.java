@@ -1,11 +1,14 @@
 package com.project.storyapp.services;
 
+import com.project.storyapp.entities.Like;
 import com.project.storyapp.entities.Post;
 import com.project.storyapp.entities.User;
 import com.project.storyapp.repos.PostRepository;
 import com.project.storyapp.requests.PostCreateRequest;
 import com.project.storyapp.requests.PostUpdateRequest;
+import com.project.storyapp.responses.LikeResponse;
 import com.project.storyapp.responses.PostResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,11 +19,17 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private PostRepository postRepository;
+    private LikeService likeService;
     private UserService userService;
 
     public PostService(PostRepository postRepository, UserService userService) {
         this.postRepository = postRepository;
         this.userService = userService;
+    }
+
+    @Autowired
+    public void setLikeService(LikeService likeService) {
+        this.likeService = likeService;
     }
 
     public List<PostResponse> getAllPosts(Optional<Long> userId) {
@@ -30,7 +39,9 @@ public class PostService {
         } else {
             postList = postRepository.findAll();
         }
-        return postList.stream().map(PostResponse::new).collect(Collectors.toList());
+        return postList.stream().map(p -> {
+            List<LikeResponse> likes = likeService.getAllLikes(Optional.empty(),Optional.of(p.getId()));
+            return new PostResponse(p,likes);}).collect(Collectors.toList());
     }
 
     public Post getOnePostById(Long postId) {
