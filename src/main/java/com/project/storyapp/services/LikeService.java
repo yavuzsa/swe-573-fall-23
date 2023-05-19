@@ -5,11 +5,13 @@ import com.project.storyapp.entities.Post;
 import com.project.storyapp.entities.User;
 import com.project.storyapp.repos.LikeRepository;
 import com.project.storyapp.requests.LikeCreateRequest;
+import com.project.storyapp.responses.LikeResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LikeService {
@@ -24,16 +26,18 @@ public class LikeService {
         this.postService = postService;
     }
 
-    public List<Like> getAllLikes(Optional<Long> userId, Optional<Long> postId) {
+    public List<LikeResponse> getAllLikes(Optional<Long> userId, Optional<Long> postId) {
+        List<Like> likeList;
         if(userId.isPresent() && postId.isPresent()) {
-            return likeRepository.findByUserIdAndPostId(userId.get(), postId.get());
+            likeList = likeRepository.findByUserIdAndPostId(userId.get(), postId.get());
         }else if(userId.isPresent()) {
-            return likeRepository.findByUserId(userId.get());
+            likeList = likeRepository.findByUserId(userId.get());
         }else if(postId.isPresent()) {
-            return likeRepository.findByPostId(postId.get());
+            likeList = likeRepository.findByPostId(postId.get());
+        } else {
+            likeList = likeRepository.findAll();
         }
-
-        return likeRepository.findAll();
+        return likeList.stream().map(like -> new LikeResponse(like)).collect(Collectors.toList());
     }
 
     public Like getOneLikeById(Long LikeId) {
