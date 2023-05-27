@@ -9,6 +9,7 @@ import com.project.storyapp.requests.PostUpdateRequest;
 import com.project.storyapp.responses.LikeResponse;
 import com.project.storyapp.responses.PostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,17 +19,13 @@ import java.util.stream.Collectors;
 @Service
 public class PostService {
 
-    private PostRepository postRepository;
-    private LikeService likeService;
-    private UserService userService;
+    private final PostRepository postRepository;
+    private final LikeService likeService;
+    private final UserService userService;
 
-    public PostService(PostRepository postRepository, UserService userService) {
+    public PostService(PostRepository postRepository, UserService userService, @Lazy LikeService likeService) {
         this.postRepository = postRepository;
         this.userService = userService;
-    }
-
-    @Autowired
-    public void setLikeService(LikeService likeService) {
         this.likeService = likeService;
     }
 
