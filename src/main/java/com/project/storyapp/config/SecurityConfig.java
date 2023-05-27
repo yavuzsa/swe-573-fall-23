@@ -69,10 +69,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        // TODO: I will be permitting all requests to access posts without a token in the future
-        // Right now, requests to /posts also require a token
-        // I left it this way to be able to test my tokens more conveniently
-        // Also, ideally, csrf should not be disabled.
         httpSecurity
                 .cors()
                 .and()
@@ -81,6 +77,8 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/posts")
+                .permitAll()
                 .antMatchers(HttpMethod.GET, "/comments")
                 .permitAll()
                 .antMatchers("/auth/**")
