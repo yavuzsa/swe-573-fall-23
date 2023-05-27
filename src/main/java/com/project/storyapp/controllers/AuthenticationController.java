@@ -2,6 +2,7 @@ package com.project.storyapp.controllers;
 
 import com.project.storyapp.entities.User;
 import com.project.storyapp.requests.UserRequest;
+import com.project.storyapp.responses.AuthenticationResponse;
 import com.project.storyapp.security.JwtTokenProvider;
 import com.project.storyapp.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -39,27 +40,32 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody UserRequest loginRequest) {
+    public AuthenticationResponse login(@RequestBody UserRequest loginRequest) {
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginRequest.getUserName(), loginRequest.getPassword());
         Authentication auth = authenticationManager.authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(auth);
         String jwtToken = jwtTokenProvider.generateJwtToken(auth);
-
-        return "Bearer " + jwtToken;
+        User user = userService.getOneUserByUserName(loginRequest.getUserName());
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+        authenticationResponse.setMessage("Bearer " + jwtToken);
+        authenticationResponse.setUserId(user.getId());
+        return authenticationResponse;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserRequest registerRequest) {
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody UserRequest registerRequest) {
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
         if(userService.getOneUserByUserName(registerRequest.getUserName()) != null) {
-            return new ResponseEntity<>("Username Already Exists!", HttpStatus.BAD_REQUEST);
+            authenticationResponse.setMessage("Username Already Exists!");
+            return new ResponseEntity<>(authenticationResponse, HttpStatus.BAD_REQUEST);
         }
         User user = new User();
         user.setUserName(registerRequest.getUserName());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         userService.createOneUser(user);
-
-        return new ResponseEntity<>("User Created!", HttpStatus.CREATED);
+        authenticationResponse.setMessage("User Created!");
+        return new ResponseEntity<>(authenticationResponse, HttpStatus.CREATED);
     }
 
 
