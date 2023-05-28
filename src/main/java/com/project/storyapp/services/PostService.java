@@ -1,6 +1,7 @@
 package com.project.storyapp.services;
 
 import com.project.storyapp.entities.Like;
+import com.project.storyapp.entities.Location;
 import com.project.storyapp.entities.Post;
 import com.project.storyapp.entities.User;
 import com.project.storyapp.repos.PostRepository;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,10 +25,13 @@ public class PostService {
     private final LikeService likeService;
     private final UserService userService;
 
-    public PostService(PostRepository postRepository, UserService userService, @Lazy LikeService likeService) {
+    private final LocationService locationService;
+
+    public PostService(PostRepository postRepository, UserService userService, @Lazy LikeService likeService, LocationService locationService) {
         this.postRepository = postRepository;
         this.userService = userService;
         this.likeService = likeService;
+        this.locationService = locationService;
     }
 
     public List<PostResponse> getAllPosts(Optional<Long> userId) {
@@ -56,7 +61,10 @@ public class PostService {
         postToSave.setId(newPostRequest.getId());
         postToSave.setText(newPostRequest.getText());
         postToSave.setTitle(newPostRequest.getTitle());
+        postToSave.setCreateDate(new Date());
+        postToSave.setStoryDate(newPostRequest.getStoryDate());
         postToSave.setUser(user);
+        postToSave.setLocation(newPostRequest.getLocation());
 
         return postRepository.save(postToSave);
     }
