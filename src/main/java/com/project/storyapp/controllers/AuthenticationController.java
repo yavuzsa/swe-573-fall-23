@@ -64,7 +64,14 @@ public class AuthenticationController {
         user.setUserName(registerRequest.getUserName());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         userService.createOneUser(user);
-        authenticationResponse.setMessage("User Created!");
+
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(registerRequest.getUserName(), registerRequest.getPassword());
+        Authentication auth = authenticationManager.authenticate(authToken);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        String jwtToken = jwtTokenProvider.generateJwtToken(auth);
+
+        authenticationResponse.setMessage("Bearer " + jwtToken);
+        authenticationResponse.setUserId(user.getId());
         return new ResponseEntity<>(authenticationResponse, HttpStatus.CREATED);
     }
 
