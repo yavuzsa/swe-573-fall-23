@@ -25,7 +25,6 @@ public class Comment {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     User user;
-    @Lob
     @Column(columnDefinition = "text")
     String text;
 }
