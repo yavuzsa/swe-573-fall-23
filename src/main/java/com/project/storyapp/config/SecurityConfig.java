@@ -72,7 +72,6 @@ public class SecurityConfig {
         httpSecurity
                 .cors()
                 .and()
-                .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(handler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
